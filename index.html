@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Vehicle Search</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f1117; color: #e1e4e8; min-height: 100vh; }
+
+  header {
+    background: linear-gradient(135deg, #1a1f2e, #16213e);
+    border-bottom: 2px solid #2563eb;
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  header svg { color: #2563eb; flex-shrink: 0; }
+  header h1 { font-size: 1.15rem; font-weight: 700; color: #fff; }
+  header p { font-size: 0.75rem; color: #8b949e; margin-top: 1px; }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 16px; }
+
+  /* Upload */
+  .upload-section {
+    background: #161b22; border: 2px dashed #30363d; border-radius: 12px;
+    padding: 28px 16px; text-align: center; margin-bottom: 16px;
+  }
+  .upload-section svg { color: #2563eb; margin-bottom: 10px; }
+  .upload-section h2 { font-size: 1rem; margin-bottom: 5px; }
+  .upload-section p { color: #8b949e; font-size: 0.82rem; }
+  .upload-section input { display: none; }
+  .btn-upload {
+    display: inline-block; margin-top: 14px; padding: 12px 26px;
+    background: #2563eb; color: #fff; border-radius: 8px; font-size: 1rem;
+    cursor: pointer; border: none; font-weight: 600; min-height: 48px;
+    line-height: 1.2; touch-action: manipulation;
+  }
+  .btn-upload:active { background: #1d4ed8; }
+
+  .photo-section {
+    background: #161b22; border: 2px dashed #30363d; border-radius: 12px;
+    padding: 20px 16px; margin-bottom: 16px; text-align: center;
+  }
+  .photo-section h3 { margin-bottom: 6px; font-size: 0.95rem; }
+  .photo-section p { color: #8b949e; font-size: 0.8rem; margin-bottom: 12px; }
+  #photo-count { color: #2563eb; font-weight: 700; }
+
+  /* Column mapping */
+  .column-map { background: #161b22; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+  .column-map h4 { font-size: 0.82rem; color: #8b949e; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+  .map-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .map-row label { font-size: 0.85rem; color: #c9d1d9; min-width: 100px; }
+  .map-row select {
+    flex: 1; background: #0d1117; border: 1px solid #30363d; color: #e1e4e8;
+    padding: 10px 10px; border-radius: 7px; font-size: 0.9rem;
+    min-height: 44px; touch-action: manipulation;
+  }
+
+  /* Search panel */
+  .search-panel {
+    background: #161b22; border: 1px solid #30363d; border-radius: 12px;
+    padding: 14px; margin-bottom: 16px;
+  }
+  .search-fields { display: flex; flex-direction: column; gap: 10px; }
+  .search-fields input {
+    background: #0d1117; border: 1px solid #30363d; color: #e1e4e8;
+    padding: 13px 14px; border-radius: 8px; font-size: 1rem; width: 100%;
+    min-height: 48px; -webkit-appearance: none; appearance: none;
+    transition: border-color .2s;
+  }
+  .search-fields input:focus { outline: none; border-color: #2563eb; }
+  /* Two-column layout for smaller fields on wider phones */
+  .search-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .search-actions { display: flex; gap: 10px; margin-top: 12px; }
+  .btn {
+    flex: 1; padding: 13px 16px; border-radius: 8px; font-size: 1rem;
+    font-weight: 600; cursor: pointer; border: none; min-height: 48px;
+    touch-action: manipulation;
+  }
+  .btn-primary { background: #2563eb; color: #fff; }
+  .btn-primary:active { background: #1d4ed8; }
+  .btn-secondary { background: #21262d; color: #e1e4e8; border: 1px solid #30363d; flex: 0 0 auto; padding: 13px 20px; }
+  .btn-secondary:active { background: #2d333b; }
+
+  /* Stats */
+  .stats-bar { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .stat-badge { background: #161b22; border: 1px solid #30363d; border-radius: 20px; padding: 5px 14px; font-size: 0.8rem; color: #8b949e; }
+  .stat-badge span { color: #2563eb; font-weight: 700; }
+
+  /* Results grid — 2 cols on phone */
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  @media (min-width: 600px) { .results-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 900px) { .results-grid { grid-template-columns: repeat(4, 1fr); } }
+
+  .vehicle-card {
+    background: #161b22; border: 1px solid #30363d; border-radius: 10px;
+    overflow: hidden; cursor: pointer; active-color: #2563eb;
+  }
+  .vehicle-card:active { border-color: #2563eb; opacity: .9; }
+
+  .card-photo {
+    width: 100%; aspect-ratio: 4/3; background: #0d1117;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+  .card-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .card-photo.no-photo svg { opacity: .2; }
+
+  .card-body { padding: 9px 10px; }
+  .card-plate {
+    font-size: 0.85rem; font-weight: 800; letter-spacing: 2px; color: #fff;
+    background: #1c2840; border: 1px solid #2563eb; display: inline-block;
+    padding: 2px 8px; border-radius: 4px; margin-bottom: 5px;
+  }
+  .card-make { font-size: 0.8rem; font-weight: 600; color: #c9d1d9; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-meta { font-size: 0.72rem; color: #8b949e; display: flex; flex-wrap: wrap; gap: 4px; }
+  .meta-tag { background: #21262d; border-radius: 4px; padding: 1px 6px; }
+  .meta-tag.color-tag { border-left: 3px solid #2563eb; }
+
+  /* Modal — full screen on mobile */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.92);
+    z-index: 200; flex-direction: column;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #161b22; display: flex; flex-direction: column;
+    height: 100%; width: 100%; overflow-y: auto;
+  }
+  @media (min-width: 600px) {
+    .modal-overlay { align-items: center; justify-content: center; padding: 20px; }
+    .modal { border-radius: 14px; max-width: 620px; max-height: 90vh; height: auto; border: 1px solid #30363d; }
+  }
+  .modal-header {
+    padding: 16px; border-bottom: 1px solid #30363d;
+    display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; background: #161b22; z-index: 10;
+  }
+  .modal-header h2 { font-size: 1rem; }
+  .modal-close {
+    background: #21262d; border: none; color: #e1e4e8; font-size: 1.1rem;
+    cursor: pointer; border-radius: 50%; width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    touch-action: manipulation;
+  }
+  .modal-photo-wrap { background: #0d1117; }
+  .modal-photo { width: 100%; max-height: 55vw; object-fit: contain; display: block; }
+  @media (min-width: 600px) { .modal-photo { max-height: 300px; } }
+  .modal-body { padding: 16px; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .detail-item label { font-size: 0.72rem; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; }
+  .detail-item p { font-size: 0.95rem; color: #e1e4e8; margin-top: 2px; font-weight: 500; }
+
+  .empty-state { text-align: center; padding: 50px 20px; color: #8b949e; }
+  .empty-state h3 { font-size: 1rem; margin: 12px 0 6px; color: #c9d1d9; }
+
+  .apply-btn-wrap { padding: 0 0 16px; }
+</style>
+</head>
+<body>
+
+<header>
+  <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/>
+    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10l2 1h6zM16 16V8a1 1 0 011-1h2l3 4v5h-2"/>
+  </svg>
+  <div>
+    <h1>Vehicle Search</h1>
+    <p>Search by plate, make, model, color, or type</p>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="upload-section" id="drop-zone">
+    <input type="file" id="excel-input" accept=".xlsx,.xls,.csv">
+    <svg width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+    </svg>
+    <h2>Upload Vehicle Data</h2>
+    <p>Excel (.xlsx) or CSV file</p>
+    <label class="btn-upload" for="excel-input">📂 Choose File</label>
+  </div>
+
+  <div class="photo-section" id="photo-section" style="display:none">
+    <h3>📷 Upload Vehicle Photos</h3>
+    <p>Select all photos. Name files by license plate (e.g. <strong>ABC1234.jpg</strong>) for automatic matching.</p>
+    <input type="file" id="photo-input" accept="image/*" multiple style="display:none">
+    <label class="btn-upload" for="photo-input">📷 Choose Photos</label>
+    <p style="margin-top:10px"><span id="photo-count">0</span> photos loaded</p>
+  </div>
+
+  <div id="mapping-section" style="display:none">
+    <div class="column-map">
+      <h4>Map Your Columns</h4>
+      <div id="column-map-rows"></div>
+    </div>
+    <div class="apply-btn-wrap">
+      <button class="btn btn-primary" id="apply-map-btn" style="width:100%">✓ Apply & Search</button>
+    </div>
+  </div>
+
+  <div class="search-panel" id="search-panel" style="display:none">
+    <div class="search-fields">
+      <input id="s-plate" placeholder="🔢 License plate (partial ok)" autocomplete="off" inputmode="text">
+      <div class="search-row">
+        <input id="s-make"  placeholder="Make" autocomplete="off">
+        <input id="s-model" placeholder="Model" autocomplete="off">
+      </div>
+      <div class="search-row">
+        <input id="s-color" placeholder="Color" autocomplete="off">
+        <input id="s-type"  placeholder="Type (SUV, Sedan…)" autocomplete="off">
+      </div>
+      <input id="s-year" placeholder="Year" autocomplete="off" inputmode="numeric">
+    </div>
+    <div class="search-actions">
+      <button class="btn btn-primary" id="search-btn">🔍 Search</button>
+      <button class="btn btn-secondary" id="clear-btn">✕ Clear</button>
+    </div>
+  </div>
+
+  <div class="stats-bar" id="stats-bar" style="display:none">
+    <div class="stat-badge">Total: <span id="stat-total">0</span></div>
+    <div class="stat-badge">Showing: <span id="stat-showing">0</span></div>
+    <div class="stat-badge">📷 <span id="stat-photos">0</span></div>
+  </div>
+
+  <div class="results-grid" id="results-grid"></div>
+  <div class="empty-state" id="empty-state" style="display:none">
+    <svg width="44" height="44" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+    </svg>
+    <h3>No vehicles found</h3>
+    <p>Try adjusting your search</p>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-title">Vehicle Details</h2>
+      <button class="modal-close" id="modal-close">✕</button>
+    </div>
+    <div class="modal-photo-wrap" id="modal-photo-wrap" style="display:none">
+      <img id="modal-photo" class="modal-photo" src="" alt="">
+    </div>
+    <div class="modal-body">
+      <div class="detail-grid" id="modal-details"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+let allVehicles = [], photoMap = {}, excelCols = [];
+let colMap = { id:'', plate:'', make:'', model:'', color:'', type:'', year:'', notes:'' };
+
+const FIELDS = [
+  { key:'id',    label:'ID' },
+  { key:'plate', label:'License Plate' },
+  { key:'make',  label:'Make' },
+  { key:'model', label:'Model' },
+  { key:'color', label:'Color' },
+  { key:'type',  label:'Vehicle Type' },
+  { key:'year',  label:'Year' },
+  { key:'notes', label:'Notes' },
+];
+
+document.getElementById('excel-input').addEventListener('change', e => handleExcel(e.target.files[0]));
+
+document.getElementById('photo-input').addEventListener('change', e => {
+  let loaded = 0;
+  Array.from(e.target.files).forEach(f => {
+    const stem = f.name.replace(/\.[^.]+$/, '').toLowerCase().replace(/[\s-]/g,'');
+    const r = new FileReader();
+    r.onload = ev => {
+      photoMap[stem] = ev.target.result;
+      document.getElementById('photo-count').textContent = ++loaded;
+      if (allVehicles.length) renderResults(filterVehicles());
+    };
+    r.readAsDataURL(f);
+  });
+});
+
+function handleExcel(file) {
+  if (!file) return;
+  const r = new FileReader();
+  r.onload = e => {
+    const wb = XLSX.read(e.target.result, { type: 'array' });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
+    if (!rows.length) return alert('No data found.');
+    excelCols = Object.keys(rows[0]);
+    allVehicles = rows;
+    showMappingUI();
+  };
+  r.readAsArrayBuffer(file);
+}
+
+function showMappingUI() {
+  document.getElementById('photo-section').style.display = '';
+  document.getElementById('mapping-section').style.display = '';
+  document.getElementById('search-panel').style.display = 'none';
+  document.getElementById('stats-bar').style.display = 'none';
+
+  const cont = document.getElementById('column-map-rows');
+  cont.innerHTML = '';
+  FIELDS.forEach(f => {
+    const row = document.createElement('div');
+    row.className = 'map-row';
+    const guess = excelCols.find(c => {
+      const cl = c.toLowerCase();
+      return (f.key==='id'    && (cl==='id'||cl.includes('photo')||cl.includes('img')||cl.includes('file'))) ||
+             (f.key==='plate' && (cl.includes('plate')||cl.includes('license')||cl.includes('tag'))) ||
+             (f.key==='make'  && cl.includes('make')) ||
+             (f.key==='model' && cl.includes('model')) ||
+             (f.key==='color' && (cl.includes('color')||cl.includes('colour'))) ||
+             (f.key==='type'  && (cl.includes('type')||cl.includes('body')||cl.includes('style'))) ||
+             (f.key==='year'  && cl.includes('year')) ||
+             (f.key==='notes' && (cl.includes('note')||cl.includes('desc')));
+    }) || '';
+    row.innerHTML = `<label>${f.label}</label>
+      <select id="map-${f.key}">
+        <option value="">— none —</option>
+        ${excelCols.map(c => `<option value="${c}"${c===guess?' selected':''}>${c}</option>`).join('')}
+      </select>`;
+    cont.appendChild(row);
+  });
+}
+
+document.getElementById('apply-map-btn').addEventListener('click', () => {
+  FIELDS.forEach(f => colMap[f.key] = document.getElementById('map-'+f.key).value);
+  document.getElementById('mapping-section').style.display = 'none';
+  document.getElementById('search-panel').style.display = '';
+  document.getElementById('stats-bar').style.display = '';
+  renderResults(allVehicles);
+});
+
+['search-btn'].forEach(id => document.getElementById(id).addEventListener('click', () => renderResults(filterVehicles())));
+document.getElementById('clear-btn').addEventListener('click', () => {
+  ['s-plate','s-make','s-model','s-color','s-type','s-year'].forEach(id => document.getElementById(id).value='');
+  renderResults(allVehicles);
+});
+['s-plate','s-make','s-model','s-color','s-type','s-year'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => { if (e.key==='Enter') { e.target.blur(); renderResults(filterVehicles()); } });
+});
+
+const get = (row, key) => colMap[key] ? String(row[colMap[key]] || '') : '';
+
+function filterVehicles() {
+  const q = {};
+  ['plate','make','model','color','type','year'].forEach(k => {
+    q[k] = document.getElementById('s-'+k).value.toLowerCase().replace(/\s/g,'');
+  });
+  return allVehicles.filter(v =>
+    (!q.plate || get(v,'plate').toLowerCase().replace(/\s/g,'').includes(q.plate)) &&
+    (!q.make  || get(v,'make').toLowerCase().includes(q.make)) &&
+    (!q.model || get(v,'model').toLowerCase().includes(q.model)) &&
+    (!q.color || get(v,'color').toLowerCase().includes(q.color)) &&
+    (!q.type  || get(v,'type').toLowerCase().includes(q.type)) &&
+    (!q.year  || get(v,'year').toLowerCase().includes(q.year))
+  );
+}
+
+function findPhoto(row) {
+  const id = get(row,'id').toLowerCase().replace(/[\s-]/g,'');
+  return id ? (photoMap[id] || null) : null;
+}
+
+function renderResults(vehicles) {
+  const grid = document.getElementById('results-grid');
+  const empty = document.getElementById('empty-state');
+  grid.innerHTML = '';
+  document.getElementById('stat-total').textContent = allVehicles.length;
+  document.getElementById('stat-showing').textContent = vehicles.length;
+  document.getElementById('stat-photos').textContent = vehicles.filter(v => findPhoto(v)).length;
+
+  if (!vehicles.length) { empty.style.display=''; return; }
+  empty.style.display = 'none';
+
+  vehicles.forEach(v => {
+    const photo = findPhoto(v);
+    const plate = get(v,'plate') || '—';
+    const make  = get(v,'make');
+    const model = get(v,'model');
+    const color = get(v,'color');
+    const type  = get(v,'type');
+    const year  = get(v,'year');
+
+    const card = document.createElement('div');
+    card.className = 'vehicle-card';
+    card.innerHTML = `
+      <div class="card-photo ${photo?'':'no-photo'}">
+        ${photo
+          ? `<img src="${photo}" alt="${plate}" loading="lazy">`
+          : `<svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/>
+               <path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10l2 1h6z"/>
+             </svg>`}
+      </div>
+      <div class="card-body">
+        <div class="card-plate">${plate}</div>
+        <div class="card-make">${[year,make,model].filter(Boolean).join(' ')||'Unknown'}</div>
+        <div class="card-meta">
+          ${color ? `<span class="meta-tag color-tag">${color}</span>` : ''}
+          ${type  ? `<span class="meta-tag">${type}</span>` : ''}
+        </div>
+      </div>`;
+    card.addEventListener('click', () => openModal(v, photo));
+    grid.appendChild(card);
+  });
+}
+
+function openModal(v, photo) {
+  const mp = document.getElementById('modal-photo');
+  const mw = document.getElementById('modal-photo-wrap');
+  if (photo) { mp.src = photo; mw.style.display = ''; }
+  else mw.style.display = 'none';
+
+  document.getElementById('modal-title').textContent =
+    [get(v,'year'),get(v,'make'),get(v,'model')].filter(Boolean).join(' ') || 'Vehicle Details';
+
+  const details = document.getElementById('modal-details');
+  details.innerHTML = '';
+  FIELDS.forEach(f => {
+    const val = get(v,f.key);
+    if (!val) return;
+    details.innerHTML += `<div class="detail-item"><label>${f.label}</label><p>${val}</p></div>`;
+  });
+  excelCols.forEach(col => {
+    if (!Object.values(colMap).includes(col) && v[col]) {
+      details.innerHTML += `<div class="detail-item"><label>${col}</label><p>${v[col]}</p></div>`;
+    }
+  });
+
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('modal').scrollTop = 0;
+}
+
+document.getElementById('modal-close').addEventListener('click', () => document.getElementById('modal').classList.remove('open'));
+document.getElementById('modal').addEventListener('click', e => { if (e.target===e.currentTarget) e.currentTarget.classList.remove('open'); });
+</script>
+</body>
+</html>
