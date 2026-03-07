@@ -283,7 +283,15 @@ async function init() {
     if (saved) { colMap = JSON.parse(saved); showSearch(); renderResults(allVehicles); }
     else showMappingUI();
   } catch(e) {
-    hide('loading-screen'); show('error-screen'); console.error(e);
+    hide('loading-screen');
+    document.getElementById('error-screen').style.display = '';
+    document.getElementById('error-screen').innerHTML = `
+      <h2>⚠️ Error</h2>
+      <p>${e.message}</p>
+      <p style="margin-top:10px;font-size:0.8rem;color:#8b949e">User: ${GITHUB_USER} | Repo: ${GITHUB_REPO} | File: ${EXCEL_FILE} | Branch: ${BRANCH}</p>
+      <p style="margin-top:14px"><button class="btn btn-primary" style="width:auto;padding:10px 24px" onclick="init()">↺ Try Again</button></p>
+    `;
+    console.error(e);
   }
 }
 
@@ -464,5 +472,7 @@ $('modal').addEventListener('click', e => { if(e.target===e.currentTarget) e.cur
 
 init();
 </script>
+</body>
+</html>
 </body>
 </html>
