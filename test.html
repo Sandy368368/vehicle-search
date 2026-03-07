@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Test</title></head>
+<body>
+<h1>Test Page</h1>
+<p id="status">Testing...</p>
+<script>
+const URL = 'https://raw.githubusercontent.com/Sandy368368/vehicle-search/main/vehicles.xlsx';
+fetch(URL)
+  .then(r => {
+    document.getElementById('status').textContent = 'Fetch status: ' + r.status + ' ' + r.statusText;
+  })
+  .catch(e => {
+    document.getElementById('status').textContent = 'Fetch error: ' + e.message;
+  });
+</script>
+</body>
+</html>
