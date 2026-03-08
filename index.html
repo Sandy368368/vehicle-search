@@ -296,7 +296,10 @@ async function init() {
 }
 
 function showMappingUI() {
-  show('mapping-section');
+  const ms = document.getElementById('mapping-section');
+  ms.style.display = 'block';
+  ms.style.visibility = 'visible';
+  ms.style.opacity = '1';
   const cont = $('column-map-rows');
   cont.innerHTML = '';
   FIELDS.forEach(f => {
@@ -329,8 +332,11 @@ $('apply-map-btn').addEventListener('click', () => {
 });
 
 function showSearch() {
-  show('search-panel');
-  $('stats-bar').style.display = 'flex';
+  const sp = document.getElementById('search-panel');
+  sp.style.display = 'block';
+  sp.style.visibility = 'visible';
+  sp.style.opacity = '1';
+  document.getElementById('stats-bar').style.display = 'flex';
 }
 
 $('refresh-btn').addEventListener('click', () => {
