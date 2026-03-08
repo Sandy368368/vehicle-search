@@ -1,4 +1,4 @@
-<!-- Vehicle Search Tool - V2.0 Build 38 -->
+<!-- Vehicle Search Tool - V2.0 Build 40 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -230,7 +230,11 @@ function formatDate(val) {
 }
 
 function dateToPhotoKey(val) {
-  // Returns YYMMDD string for photo matching
+  if (!val) return null;
+  const str = String(val).trim();
+  // If already in YYMMDD format (6 digits), use directly
+  if (/^\d{6}$/.test(str)) return str;
+  // Otherwise treat as Excel serial date
   const d = excelDateToJS(val);
   if (!d) return null;
   const yy = String(d.getUTCFullYear()).slice(2);
