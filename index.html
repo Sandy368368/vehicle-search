@@ -1,4 +1,4 @@
-<!-- Vehicle Search Tool - V2.0 Build 30 -->
+<!-- Vehicle Search Tool - V2.0 Build 38 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -256,7 +256,7 @@ async function buildPhotoIndex() {
       // Match PLATE_YYMMDD_n.jpg
       const m = f.name.match(/^(.+?)_(\d{6})_(\d+)\.(jpe?g|png)$/i);
       if (!m) return;
-      const key = `${m[1].toLowerCase()}_${m[2]}`; // e.g. "ca12345_260315"
+      const key = `${m[1].toLowerCase()}_${m[2].toLowerCase()}`; // e.g. "ca12345_260315"
       if (!photoIndex[key]) photoIndex[key] = [];
       photoIndex[key].push({ num: parseInt(m[3]), url: f.download_url });
     });
@@ -291,7 +291,7 @@ function groupByID(rows) {
 function getSightingPhotos(id, dateVal) {
   const dk = dateToPhotoKey(dateVal);
   if (!dk) return [];
-  const key = `${id.toLowerCase()}_${dk}`;
+  const key = `${id.toLowerCase()}_${dk.toLowerCase()}`;
   return photoIndex[key] || [];
 }
 
