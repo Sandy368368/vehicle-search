@@ -1,4 +1,4 @@
-<!-- Vehicle Search Tool - V1.2 Build 29 -->
+<!-- Vehicle Search Tool - V2.0 Build 30 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +10,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body { font-family: 'Segoe UI', sans-serif; background: #ffffff; color: #111111; min-height: 100vh; font-size: 16px; }
 
-  header { background: #1a3a6b; border-bottom: 3px solid #1a3a6b; padding: 14px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
+  header { background: #1a3a6b; padding: 14px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
   header svg { color: #ffffff; flex-shrink: 0; }
   header h1 { font-size: 1.4rem; font-weight: 700; color: #ffffff; }
   header p { font-size: 0.9rem; color: #cce0ff; margin-top: 1px; }
@@ -28,14 +28,7 @@
   #error-screen p { color: #444444; font-size: 0.95rem; margin-bottom: 6px; }
   #error-screen code { background: #f0f0f0; padding: 2px 8px; border-radius: 4px; font-size: 0.9rem; }
 
-  #mapping-section { display:none; }
-  .column-map { background: #f0f4ff; border: 1px solid #b0c4de; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
-  .column-map h4 { font-size: 0.95rem; color: #1a3a6b; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
-  .map-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .map-row label { font-size: 0.95rem; color: #111111; min-width: 100px; font-weight: 600; }
-  .map-row select { flex: 1; background: #ffffff; border: 2px solid #1a3a6b; color: #111111; padding: 10px; border-radius: 7px; font-size: 0.95rem; min-height: 44px; }
-  .apply-btn-wrap { padding: 0 0 16px; }
-
+  /* Search panel */
   #search-panel { display:none; }
   .search-panel { background: #f0f4ff; border: 2px solid #b0c4de; border-radius: 12px; padding: 14px; margin-bottom: 16px; }
   .search-fields { display: flex; flex-direction: column; gap: 10px; }
@@ -49,11 +42,13 @@
   .btn-primary:active { background: #0033aa; }
   .btn-secondary { background: #ffffff; color: #111111; border: 2px solid #1a3a6b; flex: 0 0 auto; padding: 13px 20px; }
 
+  /* Stats */
   .stats-bar { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
   .stat-badge { background: #f0f4ff; border: 2px solid #1a3a6b; border-radius: 20px; padding: 5px 14px; font-size: 0.9rem; color: #111111; font-weight: 600; }
   .stat-badge span { color: #1a3a6b; font-weight: 700; }
   #stats-bar { display:none; }
 
+  /* Results grid */
   .results-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
   @media (min-width: 600px) { .results-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (min-width: 900px) { .results-grid { grid-template-columns: repeat(4, 1fr); } }
@@ -65,24 +60,41 @@
   .card-photo.no-photo svg { opacity: .3; color: #1a3a6b; }
   .photo-count-badge { position: absolute; bottom: 6px; right: 6px; background: rgba(26,58,107,.85); color: #fff; font-size: 0.8rem; padding: 2px 7px; border-radius: 10px; font-weight: 700; }
   .card-body { padding: 10px 12px; }
-  .card-plate { font-size: 0.95rem; font-weight: 800; letter-spacing: 2px; color: #ffffff; background: #1a3a6b; display: inline-block; padding: 3px 10px; border-radius: 4px; margin-bottom: 6px; }
+  .card-plate { font-size: 0.95rem; font-weight: 800; letter-spacing: 2px; color: #ffffff; background: #1a3a6b; display: inline-block; padding: 3px 10px; border-radius: 4px; margin-bottom: 4px; }
+  .card-id { font-size: 0.75rem; color: #444444; margin-bottom: 5px; }
   .card-make { font-size: 0.9rem; font-weight: 700; color: #111111; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .card-meta { font-size: 0.82rem; color: #333333; display: flex; flex-wrap: wrap; gap: 4px; }
+  .card-meta { font-size: 0.82rem; color: #333333; display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 5px; }
   .meta-tag { background: #e8eef8; border-radius: 4px; padding: 2px 8px; font-weight: 600; }
   .meta-tag.color-tag { border-left: 3px solid #1a3a6b; }
+  .card-dates { font-size: 0.75rem; color: #1a3a6b; font-weight: 600; }
 
+  /* Modal */
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 200; flex-direction: column; }
   .modal-overlay.open { display: flex; }
   .modal { background: #ffffff; display: flex; flex-direction: column; height: 100%; width: 100%; overflow-y: auto; }
-  @media (min-width: 600px) { .modal-overlay { align-items: center; justify-content: center; padding: 20px; } .modal { border-radius: 14px; max-width: 660px; max-height: 92vh; height: auto; border: 2px solid #1a3a6b; } }
+  @media (min-width: 600px) {
+    .modal-overlay { align-items: center; justify-content: center; padding: 20px; }
+    .modal { border-radius: 14px; max-width: 680px; max-height: 92vh; height: auto; border: 2px solid #1a3a6b; }
+  }
   .modal-header { padding: 14px 16px; border-bottom: 2px solid #b0c4de; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: #ffffff; z-index: 10; }
   .modal-header h2 { font-size: 1.1rem; color: #111111; font-weight: 700; }
-  .modal-close { background: #1a3a6b; border: none; color: #ffffff; font-size: 1.1rem; cursor: pointer; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; }
+  .modal-header p { font-size: 0.82rem; color: #444; margin-top: 2px; }
+  .modal-close { background: #1a3a6b; border: none; color: #ffffff; font-size: 1.1rem; cursor: pointer; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
-  .gallery-wrap { background: #e8eef8; position: relative; user-select: none; }
+  /* Sighting sections */
+  .modal-body { padding: 12px 16px 20px; }
+  .sighting { border: 2px solid #b0c4de; border-radius: 10px; margin-bottom: 14px; overflow: hidden; }
+  .sighting-header { background: #1a3a6b; color: #ffffff; padding: 8px 14px; font-size: 0.95rem; font-weight: 700; }
+  .sighting-body { padding: 12px 14px; }
+  .sighting-details { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .detail-item label { font-size: 0.75rem; color: #444444; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+  .detail-item p { font-size: 0.95rem; color: #111111; margin-top: 2px; font-weight: 600; }
+  .detail-item.full-width { grid-column: 1 / -1; }
+
+  /* Gallery */
+  .gallery-wrap { background: #e8eef8; position: relative; user-select: none; margin-bottom: 0; }
   .gallery-main { position: relative; overflow: hidden; }
-  .gallery-main img { width: 100%; display: block; max-height: 56vw; object-fit: contain; }
-  @media (min-width: 600px) { .gallery-main img { max-height: 300px; } }
+  .gallery-main img { width: 100%; display: block; max-height: 220px; object-fit: contain; }
   .gallery-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(26,58,107,.8); border: none; color: #fff; font-size: 1.3rem; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 5; touch-action: manipulation; }
   .gallery-nav:active { background: #1a3a6b; }
   .gallery-nav.prev { left: 8px; }
@@ -91,13 +103,9 @@
   .gallery-counter { position: absolute; bottom: 8px; right: 10px; background: rgba(26,58,107,.8); color: #fff; font-size: 0.85rem; padding: 3px 9px; border-radius: 10px; font-weight: 600; }
   .gallery-thumbs { display: flex; gap: 6px; padding: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; background: #e8eef8; }
   .gallery-thumbs::-webkit-scrollbar { display: none; }
-  .gallery-thumb { flex-shrink: 0; width: 56px; height: 42px; object-fit: cover; border-radius: 5px; cursor: pointer; opacity: .5; border: 2px solid transparent; transition: opacity .15s, border-color .15s; }
+  .gallery-thumb { flex-shrink: 0; width: 52px; height: 40px; object-fit: cover; border-radius: 4px; cursor: pointer; opacity: .5; border: 2px solid transparent; transition: opacity .15s, border-color .15s; }
   .gallery-thumb.active { opacity: 1; border-color: #1a3a6b; }
-
-  .modal-body { padding: 16px; }
-  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .detail-item label { font-size: 0.8rem; color: #444444; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
-  .detail-item p { font-size: 1rem; color: #111111; margin-top: 2px; font-weight: 600; }
+  .no-photos { font-size: 0.82rem; color: #888; padding: 8px 0; }
 
   .empty-state { text-align: center; padding: 50px 20px; color: #444444; }
   .empty-state h3 { font-size: 1.1rem; margin: 12px 0 6px; color: #111111; font-weight: 700; }
@@ -133,24 +141,14 @@
     <p style="margin-top:14px"><button class="btn btn-primary" style="width:auto;padding:10px 24px" onclick="init()">↺ Try Again</button></p>
   </div>
 
-  <div id="mapping-section">
-    <div class="column-map">
-      <h4>Map Your Columns</h4>
-      <p style="font-size:.82rem;color:#444444;margin-bottom:12px">First-time setup — confirm which column is which.</p>
-      <div id="column-map-rows"></div>
-    </div>
-    <div class="apply-btn-wrap">
-      <button class="btn btn-primary" id="apply-map-btn" style="width:100%">✓ Save & Search</button>
-    </div>
-  </div>
-
   <div id="search-panel">
     <div class="refresh-bar">
       <button class="btn-refresh" id="refresh-btn">↺ Refresh data</button>
     </div>
     <div class="search-panel">
       <div class="search-fields">
-        <input id="s-plate" placeholder="🔢 License plate (partial ok)" autocomplete="off" inputmode="text">
+        <input id="s-id"    placeholder="🔍 ID (e.g. CA12345)" autocomplete="off">
+        <input id="s-plate" placeholder="🔢 License plate (partial ok)" autocomplete="off">
         <div class="search-row">
           <input id="s-make"  placeholder="Make" autocomplete="off">
           <input id="s-model" placeholder="Model" autocomplete="off">
@@ -159,7 +157,7 @@
           <input id="s-color" placeholder="Color" autocomplete="off">
           <input id="s-type"  placeholder="Type (SUV, Sedan…)" autocomplete="off">
         </div>
-        <input id="s-date" placeholder="Date Seen" autocomplete="off">
+        <input id="s-date" placeholder="Date Seen (MM/DD/YYYY or partial)" autocomplete="off">
       </div>
       <div class="search-actions">
         <button class="btn btn-primary" id="search-btn">🔍 Search</button>
@@ -167,9 +165,9 @@
       </div>
     </div>
     <div class="stats-bar" id="stats-bar">
-      <div class="stat-badge">Total: <span id="stat-total">0</span></div>
+      <div class="stat-badge">Vehicles: <span id="stat-total">0</span></div>
       <div class="stat-badge">Showing: <span id="stat-showing">0</span></div>
-      <div class="stat-badge">📷 <span id="stat-photos">0</span></div>
+      <div class="stat-badge">Sightings: <span id="stat-sightings">0</span></div>
     </div>
     <div class="results-grid" id="results-grid"></div>
     <div class="empty-state" id="empty-state" style="display:none">
@@ -186,21 +184,13 @@
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <div class="modal-header">
-      <h2 id="modal-title">Vehicle Details</h2>
+      <div>
+        <h2 id="modal-title">Vehicle Details</h2>
+        <p id="modal-subtitle"></p>
+      </div>
       <button class="modal-close" id="modal-close">✕</button>
     </div>
-    <div class="gallery-wrap" id="gallery-wrap" style="display:none">
-      <div class="gallery-main" id="gallery-main">
-        <img id="gallery-img" src="" alt="">
-        <button class="gallery-nav prev hidden" id="gallery-prev">&#8249;</button>
-        <button class="gallery-nav next hidden" id="gallery-next">&#8250;</button>
-        <div class="gallery-counter" id="gallery-counter"></div>
-      </div>
-      <div class="gallery-thumbs" id="gallery-thumbs"></div>
-    </div>
-    <div class="modal-body">
-      <div class="detail-grid" id="modal-details"></div>
-    </div>
+    <div class="modal-body" id="modal-body"></div>
   </div>
 </div>
 
@@ -211,27 +201,49 @@ const EXCEL_FILE  = 'vehicles.xlsx';
 const PHOTOS_DIR  = 'photos';
 const BRANCH      = 'main';
 const RAW = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${BRANCH}`;
-const COLMAP_KEY  = 'vSearch_colMap';
 
-let allVehicles = [], excelCols = [];
-let colMap = { id:'ID', plate:'Plate', make:'Make', model:'Model', color:'Color', type:'Type', date:'Date', notes:'note' };
-let photoIndex = {};
+// Column mapping — hardcoded to match your Excel
+const COL = { id:'ID', plate:'Plate', make:'Make', model:'Model', color:'Color', type:'Type', date:'Date', notes:'note' };
 
-const FIELDS = [
-  { key:'id',    label:'ID' },
-  { key:'plate', label:'License Plate' },
-  { key:'make',  label:'Make' },
-  { key:'model', label:'Model' },
-  { key:'color', label:'Color' },
-  { key:'type',  label:'Vehicle Type' },
-  { key:'date',  label:'Date Seen' },
-  { key:'notes', label:'Notes' },
-];
+let allRows = [];       // raw Excel rows
+let vehicles = [];      // grouped by ID
+let photoIndex = {};    // ID_YYMMDD -> [{num, url}]
 
 const $ = id => document.getElementById(id);
-const show = id => $(id).style.display = '';
-const hide = id => $(id).style.display = 'none';
 
+// ── Helpers ──
+function excelDateToJS(val) {
+  const num = parseFloat(val);
+  if (!isNaN(num) && num > 1000) {
+    return new Date(Math.round((num - 25569) * 86400 * 1000));
+  }
+  return null;
+}
+
+function formatDate(val) {
+  const d = excelDateToJS(val);
+  if (!d) return String(val||'');
+  const mm = String(d.getUTCMonth()+1).padStart(2,'0');
+  const dd = String(d.getUTCDate()).padStart(2,'0');
+  const yy = d.getUTCFullYear();
+  return `${mm}/${dd}/${yy}`;
+}
+
+function dateToPhotoKey(val) {
+  // Returns YYMMDD string for photo matching
+  const d = excelDateToJS(val);
+  if (!d) return null;
+  const yy = String(d.getUTCFullYear()).slice(2);
+  const mm = String(d.getUTCMonth()+1).padStart(2,'0');
+  const dd = String(d.getUTCDate()).padStart(2,'0');
+  return `${yy}${mm}${dd}`;
+}
+
+function getCol(row, key) {
+  return COL[key] ? String(row[COL[key]]||'') : '';
+}
+
+// ── Build photo index from GitHub API ──
 async function buildPhotoIndex() {
   try {
     const res = await fetch(
@@ -241,216 +253,264 @@ async function buildPhotoIndex() {
     const files = await res.json();
     photoIndex = {};
     files.forEach(f => {
-      const m = f.name.match(/^(.+?)(?:_(\d+))?\.(jpe?g|png)$/i);
+      // Match PLATE_YYMMDD_n.jpg
+      const m = f.name.match(/^(.+?)_(\d{6})_(\d+)\.(jpe?g|png)$/i);
       if (!m) return;
-      const base = m[1].toLowerCase();
-      if (!photoIndex[base]) photoIndex[base] = [];
-      const num = m[2] ? parseInt(m[2]) : 0;
-      photoIndex[base].push({ num, url: f.download_url });
+      const key = `${m[1].toLowerCase()}_${m[2]}`; // e.g. "ca12345_260315"
+      if (!photoIndex[key]) photoIndex[key] = [];
+      photoIndex[key].push({ num: parseInt(m[3]), url: f.download_url });
     });
     Object.keys(photoIndex).forEach(k => photoIndex[k].sort((a,b) => a.num - b.num));
-  } catch(e) { console.warn('Could not load photo index', e); }
+  } catch(e) { console.warn('Photo index error', e); }
 }
 
+// ── Group rows by ID ──
+function groupByID(rows) {
+  const map = {};
+  rows.forEach(row => {
+    const id = getCol(row, 'id').trim();
+    if (!id) return;
+    if (!map[id]) map[id] = { id, plate: getCol(row,'plate'), sightings: [] };
+    map[id].sightings.push({
+      make:  getCol(row,'make'),
+      model: getCol(row,'model'),
+      color: getCol(row,'color'),
+      type:  getCol(row,'type'),
+      date:  getCol(row,'date'),
+      notes: getCol(row,'notes'),
+    });
+  });
+  // Sort sightings newest first
+  Object.values(map).forEach(v => {
+    v.sightings.sort((a,b) => parseFloat(b.date||0) - parseFloat(a.date||0));
+  });
+  return Object.values(map);
+}
+
+// ── Get photos for a sighting ──
+function getSightingPhotos(id, dateVal) {
+  const dk = dateToPhotoKey(dateVal);
+  if (!dk) return [];
+  const key = `${id.toLowerCase()}_${dk}`;
+  return photoIndex[key] || [];
+}
+
+// ── Get all photos for a vehicle (for thumbnail) ──
+function getVehiclePhotos(v) {
+  // Return photos from most recent sighting that has photos
+  for (const s of v.sightings) {
+    const photos = getSightingPhotos(v.id, s.date);
+    if (photos.length) return photos;
+  }
+  return [];
+}
+
+// ── Init ──
 async function init() {
-  hide('error-screen'); hide('mapping-section'); hide('search-panel');
-  show('loading-screen');
+  $('error-screen').style.display = 'none';
+  $('search-panel').style.display = 'none';
+  $('stats-bar').style.display = 'none';
+  $('loading-screen').style.display = '';
+
   try {
     const [xlsxRes] = await Promise.all([
       fetch(`${RAW}/${EXCEL_FILE}?cb=${Date.now()}`),
       buildPhotoIndex()
     ]);
-    if (!xlsxRes.ok) throw new Error('Excel not found');
+    if (!xlsxRes.ok) throw new Error('Excel file not found');
     const buf  = await xlsxRes.arrayBuffer();
     const wb   = XLSX.read(buf, { type:'array' });
     const ws   = wb.Sheets[wb.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(ws, { defval:'' });
-    if (!rows.length) throw new Error('No rows');
-    allVehicles = rows;
-    excelCols   = Object.keys(rows[0]);
-    hide('loading-screen');
-    const saved = localStorage.getItem(COLMAP_KEY);
-    if (saved) colMap = JSON.parse(saved);
-    showSearch();
-    renderResults(allVehicles);
+    allRows    = XLSX.utils.sheet_to_json(ws, { defval:'' });
+    if (!allRows.length) throw new Error('No data rows found');
+    vehicles   = groupByID(allRows);
+
+    $('loading-screen').style.display = 'none';
+    $('search-panel').style.display = 'block';
+    $('search-panel').style.visibility = 'visible';
+    $('stats-bar').style.display = 'flex';
+    renderResults(vehicles);
   } catch(e) {
-    hide('loading-screen');
+    $('loading-screen').style.display = 'none';
     $('error-screen').style.display = '';
     $('error-screen').innerHTML = `
       <h2>⚠️ Error</h2>
       <p>${e.message}</p>
-      <p style="margin-top:10px;font-size:0.8rem;color:#444">User: ${GITHUB_USER} | Repo: ${GITHUB_REPO} | File: ${EXCEL_FILE}</p>
-      <p style="margin-top:14px"><button class="btn btn-primary" style="width:auto;padding:10px 24px" onclick="init()">↺ Try Again</button></p>
-    `;
+      <p style="margin-top:14px"><button class="btn btn-primary" style="width:auto;padding:10px 24px" onclick="init()">↺ Try Again</button></p>`;
     console.error(e);
   }
 }
 
-function showSearch() {
-  const sp = document.getElementById('search-panel');
-  sp.style.display = 'block';
-  sp.style.visibility = 'visible';
-  sp.style.opacity = '1';
-  $('stats-bar').style.display = 'flex';
-}
+// ── Search ──
+function filterVehicles() {
+  const q = {
+    id:    $('s-id').value.toLowerCase().trim(),
+    plate: $('s-plate').value.toLowerCase().replace(/\s/g,''),
+    make:  $('s-make').value.toLowerCase().trim(),
+    model: $('s-model').value.toLowerCase().trim(),
+    color: $('s-color').value.toLowerCase().trim(),
+    type:  $('s-type').value.toLowerCase().trim(),
+    date:  $('s-date').value.toLowerCase().trim(),
+  };
 
-$('refresh-btn').addEventListener('click', () => {
-  const saved = localStorage.getItem(COLMAP_KEY);
-  if (saved) colMap = JSON.parse(saved);
-  init();
-});
+  return vehicles.filter(v => {
+    if (q.id    && !v.id.toLowerCase().includes(q.id)) return false;
+    if (q.plate && !v.plate.toLowerCase().replace(/\s/g,'').includes(q.plate)) return false;
+    // For make/model/color/type/date, match if ANY sighting matches
+    if (q.make  && !v.sightings.some(s => s.make.toLowerCase().includes(q.make)))   return false;
+    if (q.model && !v.sightings.some(s => s.model.toLowerCase().includes(q.model))) return false;
+    if (q.color && !v.sightings.some(s => s.color.toLowerCase().includes(q.color))) return false;
+    if (q.type  && !v.sightings.some(s => s.type.toLowerCase().includes(q.type)))   return false;
+    if (q.date  && !v.sightings.some(s => formatDate(s.date).includes(q.date)))     return false;
+    return true;
+  });
+}
 
 $('search-btn').addEventListener('click', () => renderResults(filterVehicles()));
 $('clear-btn').addEventListener('click', () => {
-  ['s-plate','s-make','s-model','s-color','s-type','s-date'].forEach(id => $(id).value='');
-  renderResults(allVehicles);
+  ['s-id','s-plate','s-make','s-model','s-color','s-type','s-date'].forEach(id => $(id).value='');
+  renderResults(vehicles);
 });
-['s-plate','s-make','s-model','s-color','s-type','s-date'].forEach(id => {
-  $(id).addEventListener('keydown', e => { if(e.key==='Enter'){e.target.blur();renderResults(filterVehicles());} });
+['s-id','s-plate','s-make','s-model','s-color','s-type','s-date'].forEach(id => {
+  $(id).addEventListener('keydown', e => { if(e.key==='Enter'){e.target.blur(); renderResults(filterVehicles());} });
 });
+$('refresh-btn').addEventListener('click', init);
 
-const get = (row, key) => colMap[key] ? String(row[colMap[key]]||'') : '';
-
-function formatDate(val) {
-  if (!val) return '';
-  const num = parseFloat(val);
-  if (!isNaN(num) && num > 1000) {
-    // Convert Excel serial date to JS date
-    const date = new Date(Math.round((num - 25569) * 86400 * 1000));
-    const d = String(date.getUTCDate()).padStart(2,'0');
-    const m = String(date.getUTCMonth()+1).padStart(2,'0');
-    const y = date.getUTCFullYear();
-    return `${m}/${d}/${y}`;
-  }
-  return val;
-}
-
-function getField(row, key) {
-  const raw = get(row, key);
-  if (key === 'date') return formatDate(raw);
-  return raw;
-}
-
-function filterVehicles() {
-  const q = {};
-  ['plate','make','model','color','type','date'].forEach(k => q[k] = $(('s-'+k)).value.toLowerCase().replace(/\s/g,''));
-  return allVehicles.filter(v =>
-    (!q.plate || get(v,'plate').toLowerCase().replace(/\s/g,'').includes(q.plate)) &&
-    (!q.make  || get(v,'make').toLowerCase().includes(q.make)) &&
-    (!q.model || get(v,'model').toLowerCase().includes(q.model)) &&
-    (!q.color || get(v,'color').toLowerCase().includes(q.color)) &&
-    (!q.type  || get(v,'type').toLowerCase().includes(q.type)) &&
-    (!q.date  || get(v,'date').toLowerCase().includes(q.date))
-  );
-}
-
-function getPhotos(row) {
-  const id = get(row,'id').trim().toLowerCase().replace(/[\s-]/g,'');
-  return id ? (photoIndex[id] || []) : [];
-}
-
-function renderResults(vehicles) {
-  const grid  = $('results-grid'), empty = $('empty-state');
+// ── Render results ──
+function renderResults(filtered) {
+  const grid  = $('results-grid');
+  const empty = $('empty-state');
   grid.innerHTML = '';
-  $('stat-total').textContent   = allVehicles.length;
-  $('stat-showing').textContent = vehicles.length;
-  $('stat-photos').textContent  = vehicles.filter(v => getPhotos(v).length > 0).length;
-  if (!vehicles.length) { empty.style.display=''; return; }
+
+  const totalSightings = filtered.reduce((n,v) => n + v.sightings.length, 0);
+  $('stat-total').textContent    = vehicles.length;
+  $('stat-showing').textContent  = filtered.length;
+  $('stat-sightings').textContent = totalSightings;
+
+  if (!filtered.length) { empty.style.display=''; return; }
   empty.style.display = 'none';
 
-  vehicles.forEach(v => {
-    const photos  = getPhotos(v);
+  filtered.forEach(v => {
+    const photos   = getVehiclePhotos(v);
     const firstURL = photos.length ? photos[0].url : null;
-    const plate   = get(v,'plate')||'—';
-    const make    = get(v,'make');
-    const model   = get(v,'model');
-    const color   = get(v,'color');
-    const type    = get(v,'type');
+    const latest   = v.sightings[0]; // newest first
+    const allDates = v.sightings.map(s => formatDate(s.date)).filter(Boolean);
 
     const card = document.createElement('div');
     card.className = 'vehicle-card';
     card.innerHTML = `
       <div class="card-photo ${firstURL?'':'no-photo'}">
         ${firstURL
-          ? `<img src="${firstURL}" alt="${plate}" loading="lazy">`
+          ? `<img src="${firstURL}" alt="${v.id}" loading="lazy">`
           : `<svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10l2 1h6z"/></svg>`}
-        ${photos.length > 1 ? `<div class="photo-count-badge">📷 ${photos.length}</div>` : ''}
+        ${v.sightings.length > 1 ? `<div class="photo-count-badge">👁 ${v.sightings.length}</div>` : ''}
       </div>
       <div class="card-body">
-        <div class="card-plate">${plate}</div>
-        <div class="card-make">${[make,model].filter(Boolean).join(' ')||'Unknown'}</div>
+        <div class="card-plate">${v.plate||v.id}</div>
+        <div class="card-id">${v.id}</div>
+        <div class="card-make">${[latest.make, latest.model].filter(Boolean).join(' ')||'Unknown'}</div>
         <div class="card-meta">
-          ${color?`<span class="meta-tag color-tag">${color}</span>`:''}
-          ${type ?`<span class="meta-tag">${type}</span>`:''}
+          ${latest.color ? `<span class="meta-tag color-tag">${latest.color}</span>` : ''}
+          ${latest.type  ? `<span class="meta-tag">${latest.type}</span>` : ''}
         </div>
+        <div class="card-dates">📅 ${allDates.join(' · ')}</div>
       </div>`;
-    card.addEventListener('click', () => openModal(v, photos));
+    card.addEventListener('click', () => openModal(v));
     grid.appendChild(card);
   });
 }
 
-let gPhotos = [], gIndex = 0;
+// ── Modal ──
+function openModal(v) {
+  $('modal-title').textContent = v.id;
+  $('modal-subtitle').textContent = `Plate: ${v.plate} · ${v.sightings.length} sighting${v.sightings.length>1?'s':''}`;
 
-function openModal(v, photos) {
-  gPhotos = photos; gIndex = 0;
-  const gw = $('gallery-wrap');
-  if (photos.length) { gw.style.display=''; renderGallery(); }
-  else gw.style.display = 'none';
+  const body = $('modal-body');
+  body.innerHTML = '';
 
-  $('modal-title').textContent =
-    [get(v,'make'),get(v,'model')].filter(Boolean).join(' ') || 'Vehicle Details';
+  v.sightings.forEach((s, i) => {
+    const photos = getSightingPhotos(v.id, s.date);
+    const sec = document.createElement('div');
+    sec.className = 'sighting';
 
-  const details = $('modal-details');
-  details.innerHTML = '';
-  FIELDS.forEach(f => {
-    const val = getField(v,f.key); if(!val) return;
-    details.innerHTML += `<div class="detail-item"><label>${f.label}</label><p>${val}</p></div>`;
-  });
-  excelCols.forEach(col => {
-    if (!Object.values(colMap).includes(col) && v[col])
-      details.innerHTML += `<div class="detail-item"><label>${col}</label><p>${v[col]}</p></div>`;
+    const fields = [
+      { label:'Make',         val: s.make },
+      { label:'Model',        val: s.model },
+      { label:'Color',        val: s.color },
+      { label:'Vehicle Type', val: s.type },
+    ].filter(f => f.val);
+
+    const notesHTML = s.notes
+      ? `<div class="detail-item full-width"><label>Notes</label><p>${s.notes}</p></div>`
+      : '';
+
+    const detailsHTML = fields.map(f =>
+      `<div class="detail-item"><label>${f.label}</label><p>${f.val}</p></div>`
+    ).join('') + notesHTML;
+
+    // Gallery HTML for this sighting
+    const gid = `g${i}`;
+    const galleryHTML = photos.length
+      ? `<div class="gallery-wrap">
+           <div class="gallery-main" id="gm${gid}">
+             <img id="gi${gid}" src="${photos[0].url}" alt="">
+             <button class="gallery-nav prev hidden" id="gp${gid}">&#8249;</button>
+             <button class="gallery-nav next ${photos.length>1?'':'hidden'}" id="gn${gid}">&#8250;</button>
+             <div class="gallery-counter" id="gc${gid}">1 / ${photos.length}</div>
+           </div>
+           ${photos.length > 1
+             ? `<div class="gallery-thumbs">${photos.map((p,pi) =>
+                 `<img class="gallery-thumb${pi===0?' active':''}" src="${p.url}" data-gid="${gid}" data-i="${pi}" loading="lazy">`
+               ).join('')}</div>`
+             : ''}
+         </div>`
+      : `<p class="no-photos">No photos for this sighting</p>`;
+
+    sec.innerHTML = `
+      <div class="sighting-header">📅 ${formatDate(s.date)}</div>
+      <div class="sighting-body">
+        ${galleryHTML}
+        <div class="sighting-details">${detailsHTML}</div>
+      </div>`;
+    body.appendChild(sec);
+
+    // Wire up gallery controls for this sighting
+    if (photos.length > 1) {
+      let idx = 0;
+      const img   = $(`gi${gid}`);
+      const prev  = $(`gp${gid}`);
+      const next  = $(`gn${gid}`);
+      const ctr   = $(`gc${gid}`);
+      const thumbs = sec.querySelectorAll(`.gallery-thumb[data-gid="${gid}"]`);
+
+      function setPhoto(n) {
+        idx = n;
+        img.src = photos[idx].url;
+        ctr.textContent = `${idx+1} / ${photos.length}`;
+        prev.classList.toggle('hidden', idx===0);
+        next.classList.toggle('hidden', idx===photos.length-1);
+        thumbs.forEach((t,ti) => t.classList.toggle('active', ti===idx));
+      }
+
+      prev.addEventListener('click', () => { if(idx>0) setPhoto(idx-1); });
+      next.addEventListener('click', () => { if(idx<photos.length-1) setPhoto(idx+1); });
+      thumbs.forEach((t,ti) => t.addEventListener('click', () => setPhoto(ti)));
+
+      // Swipe
+      let tx = 0;
+      $(`gm${gid}`).addEventListener('touchstart', e => tx = e.touches[0].clientX, {passive:true});
+      $(`gm${gid}`).addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        if (Math.abs(dx) < 40) return;
+        if (dx < 0 && idx < photos.length-1) setPhoto(idx+1);
+        if (dx > 0 && idx > 0) setPhoto(idx-1);
+      });
+    }
   });
 
   $('modal').classList.add('open');
   $('modal').scrollTop = 0;
 }
-
-function renderGallery() {
-  const img     = $('gallery-img');
-  const prev    = $('gallery-prev');
-  const next    = $('gallery-next');
-  const counter = $('gallery-counter');
-  const thumbs  = $('gallery-thumbs');
-
-  img.src = gPhotos[gIndex].url;
-  counter.textContent = `${gIndex+1} / ${gPhotos.length}`;
-  prev.classList.toggle('hidden', gIndex === 0);
-  next.classList.toggle('hidden', gIndex === gPhotos.length - 1);
-
-  if (gPhotos.length > 1) {
-    thumbs.style.display = 'flex';
-    thumbs.innerHTML = gPhotos.map((p,i) =>
-      `<img class="gallery-thumb${i===gIndex?' active':''}" src="${p.url}" data-i="${i}" loading="lazy">`
-    ).join('');
-    thumbs.querySelectorAll('.gallery-thumb').forEach(t =>
-      t.addEventListener('click', () => { gIndex = parseInt(t.dataset.i); renderGallery(); })
-    );
-  } else {
-    thumbs.style.display = 'none';
-  }
-}
-
-$('gallery-prev').addEventListener('click', () => { if(gIndex>0){gIndex--;renderGallery();} });
-$('gallery-next').addEventListener('click', () => { if(gIndex<gPhotos.length-1){gIndex++;renderGallery();} });
-
-let touchStartX = 0;
-$('gallery-main').addEventListener('touchstart', e => touchStartX = e.touches[0].clientX, {passive:true});
-$('gallery-main').addEventListener('touchend', e => {
-  const dx = e.changedTouches[0].clientX - touchStartX;
-  if (Math.abs(dx) < 40) return;
-  if (dx < 0 && gIndex < gPhotos.length-1) { gIndex++; renderGallery(); }
-  if (dx > 0 && gIndex > 0)                { gIndex--; renderGallery(); }
-});
 
 $('modal-close').addEventListener('click', () => $('modal').classList.remove('open'));
 $('modal').addEventListener('click', e => { if(e.target===e.currentTarget) e.currentTarget.classList.remove('open'); });
