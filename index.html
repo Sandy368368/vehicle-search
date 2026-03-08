@@ -1,4 +1,4 @@
-<!-- Vehicle Search Tool - V1.2 Build 23 -->
+<!-- Vehicle Search Tool - V1.2 Build 24 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,112 +10,101 @@
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body { font-family: 'Segoe UI', sans-serif; background: #ffffff; color: #111111; min-height: 100vh; font-size: 16px; }
 
-  header {
-    background: linear-gradient(135deg, #1a1f2e, #16213e);
-    border-bottom: 2px solid #2563eb;
-    padding: 14px 16px;
-    display: flex; align-items: center; gap: 12px;
-    position: sticky; top: 0; z-index: 100;
-  }
-  header svg { color: #2563eb; flex-shrink: 0; }
-  header h1 { font-size: 1.15rem; font-weight: 700; color: #fff; }
-  header p { font-size: 0.75rem; color: #8b949e; margin-top: 1px; }
+  header { background: #1a3a6b; border-bottom: 3px solid #1a3a6b; padding: 14px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
+  header svg { color: #ffffff; flex-shrink: 0; }
+  header h1 { font-size: 1.4rem; font-weight: 700; color: #ffffff; }
+  header p { font-size: 0.9rem; color: #cce0ff; margin-top: 1px; }
 
   .container { max-width: 900px; margin: 0 auto; padding: 16px; }
 
   #loading-screen { text-align: center; padding: 60px 20px; }
-  .spinner { width: 44px; height: 44px; border: 4px solid #30363d; border-top-color: #2563eb; border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 18px; }
+  .spinner { width: 44px; height: 44px; border: 4px solid #cccccc; border-top-color: #1a3a6b; border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 18px; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  #loading-screen h2 { font-size: 1rem; color: #c9d1d9; margin-bottom: 6px; }
-  #loading-screen p { font-size: 0.82rem; color: #8b949e; }
+  #loading-screen h2 { font-size: 1.2rem; color: #111111; margin-bottom: 6px; }
+  #loading-screen p { font-size: 0.95rem; color: #444444; }
 
   #error-screen { display:none; text-align:center; padding: 40px 20px; }
-  #error-screen h2 { color: #f85149; margin-bottom: 10px; }
-  #error-screen p { color: #8b949e; font-size: 0.85rem; margin-bottom: 6px; }
-  #error-screen code { background: #161b22; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; }
+  #error-screen h2 { color: #cc0000; margin-bottom: 10px; }
+  #error-screen p { color: #444444; font-size: 0.95rem; margin-bottom: 6px; }
+  #error-screen code { background: #f0f0f0; padding: 2px 8px; border-radius: 4px; font-size: 0.9rem; }
 
   #mapping-section { display:none; }
-  .column-map { background: #161b22; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
-  .column-map h4 { font-size: 0.82rem; color: #8b949e; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+  .column-map { background: #f0f4ff; border: 1px solid #b0c4de; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+  .column-map h4 { font-size: 0.95rem; color: #1a3a6b; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
   .map-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .map-row label { font-size: 0.85rem; color: #c9d1d9; min-width: 100px; }
-  .map-row select { flex: 1; background: #0d1117; border: 1px solid #30363d; color: #e1e4e8; padding: 10px; border-radius: 7px; font-size: 0.9rem; min-height: 44px; }
+  .map-row label { font-size: 0.95rem; color: #111111; min-width: 100px; font-weight: 600; }
+  .map-row select { flex: 1; background: #ffffff; border: 2px solid #1a3a6b; color: #111111; padding: 10px; border-radius: 7px; font-size: 0.95rem; min-height: 44px; }
   .apply-btn-wrap { padding: 0 0 16px; }
 
   #search-panel { display:none; }
-  .search-panel { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 14px; margin-bottom: 16px; }
+  .search-panel { background: #f0f4ff; border: 2px solid #b0c4de; border-radius: 12px; padding: 14px; margin-bottom: 16px; }
   .search-fields { display: flex; flex-direction: column; gap: 10px; }
-  .search-fields input { background: #0d1117; border: 1px solid #30363d; color: #e1e4e8; padding: 13px 14px; border-radius: 8px; font-size: 1rem; width: 100%; min-height: 48px; -webkit-appearance: none; transition: border-color .2s; }
-  .search-fields input:focus { outline: none; border-color: #2563eb; }
+  .search-fields input { background: #ffffff; border: 2px solid #1a3a6b; color: #111111; padding: 13px 14px; border-radius: 8px; font-size: 1rem; width: 100%; min-height: 48px; -webkit-appearance: none; transition: border-color .2s; }
+  .search-fields input::placeholder { color: #666666; }
+  .search-fields input:focus { outline: none; border-color: #0033aa; }
   .search-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .search-actions { display: flex; gap: 10px; margin-top: 12px; }
-  .btn { flex: 1; padding: 13px 16px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; border: none; min-height: 48px; touch-action: manipulation; }
-  .btn-primary { background: #2563eb; color: #fff; }
-  .btn-primary:active { background: #1d4ed8; }
-  .btn-secondary { background: #21262d; color: #e1e4e8; border: 1px solid #30363d; flex: 0 0 auto; padding: 13px 20px; }
+  .btn { flex: 1; padding: 13px 16px; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; border: none; min-height: 48px; touch-action: manipulation; }
+  .btn-primary { background: #1a3a6b; color: #ffffff; }
+  .btn-primary:active { background: #0033aa; }
+  .btn-secondary { background: #ffffff; color: #111111; border: 2px solid #1a3a6b; flex: 0 0 auto; padding: 13px 20px; }
 
   .stats-bar { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
-  .stat-badge { background: #161b22; border: 1px solid #30363d; border-radius: 20px; padding: 5px 14px; font-size: 0.8rem; color: #8b949e; }
-  .stat-badge span { color: #2563eb; font-weight: 700; }
+  .stat-badge { background: #f0f4ff; border: 2px solid #1a3a6b; border-radius: 20px; padding: 5px 14px; font-size: 0.9rem; color: #111111; font-weight: 600; }
+  .stat-badge span { color: #1a3a6b; font-weight: 700; }
   #stats-bar { display:none; }
 
   .results-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
   @media (min-width: 600px) { .results-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (min-width: 900px) { .results-grid { grid-template-columns: repeat(4, 1fr); } }
 
-  .vehicle-card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; overflow: hidden; cursor: pointer; }
-  .vehicle-card:active { border-color: #2563eb; opacity: .9; }
-  .card-photo { width: 100%; aspect-ratio: 4/3; background: #0d1117; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+  .vehicle-card { background: #ffffff; border: 2px solid #b0c4de; border-radius: 10px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+  .vehicle-card:active { border-color: #1a3a6b; opacity: .9; }
+  .card-photo { width: 100%; aspect-ratio: 4/3; background: #e8eef8; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
   .card-photo img { width: 100%; height: 100%; object-fit: cover; }
-  .card-photo.no-photo svg { opacity: .2; }
-  .photo-count-badge { position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,.7); color: #fff; font-size: 0.7rem; padding: 2px 7px; border-radius: 10px; font-weight: 600; }
-  .card-body { padding: 9px 10px; }
-  .card-plate { font-size: 0.85rem; font-weight: 800; letter-spacing: 2px; color: #fff; background: #1c2840; border: 1px solid #2563eb; display: inline-block; padding: 2px 8px; border-radius: 4px; margin-bottom: 5px; }
-  .card-make { font-size: 0.8rem; font-weight: 600; color: #c9d1d9; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .card-meta { font-size: 0.72rem; color: #8b949e; display: flex; flex-wrap: wrap; gap: 4px; }
-  .meta-tag { background: #21262d; border-radius: 4px; padding: 1px 6px; }
-  .meta-tag.color-tag { border-left: 3px solid #2563eb; }
+  .card-photo.no-photo svg { opacity: .3; color: #1a3a6b; }
+  .photo-count-badge { position: absolute; bottom: 6px; right: 6px; background: rgba(26,58,107,.85); color: #fff; font-size: 0.8rem; padding: 2px 7px; border-radius: 10px; font-weight: 700; }
+  .card-body { padding: 10px 12px; }
+  .card-plate { font-size: 0.95rem; font-weight: 800; letter-spacing: 2px; color: #ffffff; background: #1a3a6b; display: inline-block; padding: 3px 10px; border-radius: 4px; margin-bottom: 6px; }
+  .card-make { font-size: 0.9rem; font-weight: 700; color: #111111; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-meta { font-size: 0.82rem; color: #333333; display: flex; flex-wrap: wrap; gap: 4px; }
+  .meta-tag { background: #e8eef8; border-radius: 4px; padding: 2px 8px; font-weight: 600; }
+  .meta-tag.color-tag { border-left: 3px solid #1a3a6b; }
 
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.92); z-index: 200; flex-direction: column; }
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 200; flex-direction: column; }
   .modal-overlay.open { display: flex; }
-  .modal { background: #161b22; display: flex; flex-direction: column; height: 100%; width: 100%; overflow-y: auto; }
-  @media (min-width: 600px) {
-    .modal-overlay { align-items: center; justify-content: center; padding: 20px; }
-    .modal { border-radius: 14px; max-width: 660px; max-height: 92vh; height: auto; border: 1px solid #30363d; }
-  }
-  .modal-header { padding: 14px 16px; border-bottom: 1px solid #30363d; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: #161b22; z-index: 10; }
-  .modal-header h2 { font-size: 1rem; }
-  .modal-close { background: #21262d; border: none; color: #e1e4e8; font-size: 1.1rem; cursor: pointer; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; }
+  .modal { background: #ffffff; display: flex; flex-direction: column; height: 100%; width: 100%; overflow-y: auto; }
+  @media (min-width: 600px) { .modal-overlay { align-items: center; justify-content: center; padding: 20px; } .modal { border-radius: 14px; max-width: 660px; max-height: 92vh; height: auto; border: 2px solid #1a3a6b; } }
+  .modal-header { padding: 14px 16px; border-bottom: 2px solid #b0c4de; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: #ffffff; z-index: 10; }
+  .modal-header h2 { font-size: 1.1rem; color: #111111; font-weight: 700; }
+  .modal-close { background: #1a3a6b; border: none; color: #ffffff; font-size: 1.1rem; cursor: pointer; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; }
 
-  .gallery-wrap { background: #0d1117; position: relative; user-select: none; }
+  .gallery-wrap { background: #e8eef8; position: relative; user-select: none; }
   .gallery-main { position: relative; overflow: hidden; }
   .gallery-main img { width: 100%; display: block; max-height: 56vw; object-fit: contain; }
   @media (min-width: 600px) { .gallery-main img { max-height: 300px; } }
-
-  .gallery-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,.55); border: none; color: #fff; font-size: 1.3rem; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 5; touch-action: manipulation; }
-  .gallery-nav:active { background: rgba(37,99,235,.7); }
+  .gallery-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(26,58,107,.8); border: none; color: #fff; font-size: 1.3rem; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 5; touch-action: manipulation; }
+  .gallery-nav:active { background: #1a3a6b; }
   .gallery-nav.prev { left: 8px; }
   .gallery-nav.next { right: 8px; }
   .gallery-nav.hidden { display: none; }
-
-  .gallery-counter { position: absolute; bottom: 8px; right: 10px; background: rgba(0,0,0,.65); color: #fff; font-size: 0.75rem; padding: 3px 9px; border-radius: 10px; }
-
-  .gallery-thumbs { display: flex; gap: 6px; padding: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .gallery-counter { position: absolute; bottom: 8px; right: 10px; background: rgba(26,58,107,.8); color: #fff; font-size: 0.85rem; padding: 3px 9px; border-radius: 10px; font-weight: 600; }
+  .gallery-thumbs { display: flex; gap: 6px; padding: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; background: #e8eef8; }
   .gallery-thumbs::-webkit-scrollbar { display: none; }
   .gallery-thumb { flex-shrink: 0; width: 56px; height: 42px; object-fit: cover; border-radius: 5px; cursor: pointer; opacity: .5; border: 2px solid transparent; transition: opacity .15s, border-color .15s; }
-  .gallery-thumb.active { opacity: 1; border-color: #2563eb; }
+  .gallery-thumb.active { opacity: 1; border-color: #1a3a6b; }
 
   .modal-body { padding: 16px; }
   .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .detail-item label { font-size: 0.72rem; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; }
-  .detail-item p { font-size: 0.95rem; color: #e1e4e8; margin-top: 2px; font-weight: 500; }
+  .detail-item label { font-size: 0.8rem; color: #444444; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+  .detail-item p { font-size: 1rem; color: #111111; margin-top: 2px; font-weight: 600; }
 
-  .empty-state { text-align: center; padding: 50px 20px; color: #8b949e; }
-  .empty-state h3 { font-size: 1rem; margin: 12px 0 6px; color: #c9d1d9; }
+  .empty-state { text-align: center; padding: 50px 20px; color: #444444; }
+  .empty-state h3 { font-size: 1.1rem; margin: 12px 0 6px; color: #111111; font-weight: 700; }
 
   .refresh-bar { text-align:right; margin-bottom: 10px; }
-  .btn-refresh { background: none; border: 1px solid #30363d; color: #8b949e; border-radius: 7px; padding: 6px 14px; font-size: 0.8rem; cursor: pointer; }
-  .btn-refresh:active { background: #21262d; }
+  .btn-refresh { background: #ffffff; border: 2px solid #1a3a6b; color: #1a3a6b; border-radius: 7px; padding: 6px 14px; font-size: 0.9rem; cursor: pointer; font-weight: 700; }
+  .btn-refresh:active { background: #f0f4ff; }
 </style>
 </head>
 <body>
@@ -127,7 +116,7 @@
   </svg>
   <div>
     <h1>Vehicle Search</h1>
-    <p>Search by plate, make, model, color, or type</p>
+    <p>Search by plate, make, model, color, type, or date</p>
   </div>
 </header>
 
@@ -147,7 +136,7 @@
   <div id="mapping-section">
     <div class="column-map">
       <h4>Map Your Columns</h4>
-      <p style="font-size:.82rem;color:#8b949e;margin-bottom:12px">First-time setup — confirm which column is which.</p>
+      <p style="font-size:.82rem;color:#444444;margin-bottom:12px">First-time setup — confirm which column is which.</p>
       <div id="column-map-rows"></div>
     </div>
     <div class="apply-btn-wrap">
@@ -286,59 +275,23 @@ async function init() {
     renderResults(allVehicles);
   } catch(e) {
     hide('loading-screen');
-    document.getElementById('error-screen').style.display = '';
-    document.getElementById('error-screen').innerHTML = `
+    $('error-screen').style.display = '';
+    $('error-screen').innerHTML = `
       <h2>⚠️ Error</h2>
       <p>${e.message}</p>
-      <p style="margin-top:10px;font-size:0.8rem;color:#8b949e">User: ${GITHUB_USER} | Repo: ${GITHUB_REPO} | File: ${EXCEL_FILE} | Branch: ${BRANCH}</p>
+      <p style="margin-top:10px;font-size:0.8rem;color:#444">User: ${GITHUB_USER} | Repo: ${GITHUB_REPO} | File: ${EXCEL_FILE}</p>
       <p style="margin-top:14px"><button class="btn btn-primary" style="width:auto;padding:10px 24px" onclick="init()">↺ Try Again</button></p>
     `;
     console.error(e);
   }
 }
 
-function showMappingUI() {
-  const ms = document.getElementById('mapping-section');
-  ms.style.display = 'block';
-  ms.style.visibility = 'visible';
-  ms.style.opacity = '1';
-  const cont = $('column-map-rows');
-  cont.innerHTML = '';
-  FIELDS.forEach(f => {
-    const row = document.createElement('div');
-    row.className = 'map-row';
-    const guess = excelCols.find(c => {
-      const cl = c.toLowerCase();
-      return (f.key==='id'    && (cl==='id'||cl.includes('photo')||cl.includes('img')||cl.includes('file'))) ||
-             (f.key==='plate' && (cl.includes('plate')||cl.includes('license')||cl.includes('tag'))) ||
-             (f.key==='make'  && cl.includes('make')) ||
-             (f.key==='model' && cl.includes('model')) ||
-             (f.key==='color' && (cl.includes('color')||cl.includes('colour'))) ||
-             (f.key==='type'  && (cl.includes('type')||cl.includes('body')||cl.includes('style'))) ||
-             (f.key==='year'  && cl.includes('year')) ||
-             (f.key==='notes' && (cl.includes('note')||cl.includes('desc')));
-    }) || '';
-    row.innerHTML = `<label>${f.label}</label>
-      <select id="map-${f.key}">
-        <option value="">— none —</option>
-        ${excelCols.map(c=>`<option value="${c}"${c===guess?' selected':''}>${c}</option>`).join('')}
-      </select>`;
-    cont.appendChild(row);
-  });
-}
-
-$('apply-map-btn').addEventListener('click', () => {
-  FIELDS.forEach(f => colMap[f.key] = $('map-'+f.key).value);
-  localStorage.setItem(COLMAP_KEY, JSON.stringify(colMap));
-  hide('mapping-section'); showSearch(); renderResults(allVehicles);
-});
-
 function showSearch() {
   const sp = document.getElementById('search-panel');
   sp.style.display = 'block';
   sp.style.visibility = 'visible';
   sp.style.opacity = '1';
-  document.getElementById('stats-bar').style.display = 'flex';
+  $('stats-bar').style.display = 'flex';
 }
 
 $('refresh-btn').addEventListener('click', () => {
@@ -352,7 +305,7 @@ $('clear-btn').addEventListener('click', () => {
   ['s-plate','s-make','s-model','s-color','s-type','s-date'].forEach(id => $(id).value='');
   renderResults(allVehicles);
 });
-['s-plate','s-make','s-model','s-color','s-type','s-year'].forEach(id => {
+['s-plate','s-make','s-model','s-color','s-type','s-date'].forEach(id => {
   $(id).addEventListener('keydown', e => { if(e.key==='Enter'){e.target.blur();renderResults(filterVehicles());} });
 });
 
@@ -386,9 +339,13 @@ function renderResults(vehicles) {
   empty.style.display = 'none';
 
   vehicles.forEach(v => {
-    const photos = getPhotos(v);
+    const photos  = getPhotos(v);
     const firstURL = photos.length ? photos[0].url : null;
-    const plate = get(v,'plate')||'—';
+    const plate   = get(v,'plate')||'—';
+    const make    = get(v,'make');
+    const model   = get(v,'model');
+    const color   = get(v,'color');
+    const type    = get(v,'type');
 
     const card = document.createElement('div');
     card.className = 'vehicle-card';
@@ -401,10 +358,10 @@ function renderResults(vehicles) {
       </div>
       <div class="card-body">
         <div class="card-plate">${plate}</div>
-        <div class="card-make">${[get(v,'make'),get(v,'model')].filter(Boolean).join(' ')||'Unknown'}</div>
+        <div class="card-make">${[make,model].filter(Boolean).join(' ')||'Unknown'}</div>
         <div class="card-meta">
-          ${get(v,'color')?`<span class="meta-tag color-tag">${get(v,'color')}</span>`:''}
-          ${get(v,'type') ?`<span class="meta-tag">${get(v,'type')}</span>`:''}
+          ${color?`<span class="meta-tag color-tag">${color}</span>`:''}
+          ${type ?`<span class="meta-tag">${type}</span>`:''}
         </div>
       </div>`;
     card.addEventListener('click', () => openModal(v, photos));
