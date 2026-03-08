@@ -1,4 +1,4 @@
-<!-- Vehicle Search Tool - V1.2 Build 21 -->
+<!-- Vehicle Search Tool - V1.2 Build 23 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -349,7 +349,7 @@ $('refresh-btn').addEventListener('click', () => {
 
 $('search-btn').addEventListener('click', () => renderResults(filterVehicles()));
 $('clear-btn').addEventListener('click', () => {
-  ['s-plate','s-make','s-model','s-color','s-type','s-year'].forEach(id => $(id).value='');
+  ['s-plate','s-make','s-model','s-color','s-type','s-date'].forEach(id => $(id).value='');
   renderResults(allVehicles);
 });
 ['s-plate','s-make','s-model','s-color','s-type','s-year'].forEach(id => {
