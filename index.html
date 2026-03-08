@@ -1,4 +1,4 @@
-<!-- Vehicle Search Tool - V1.2 -->
+<!-- Vehicle Search Tool - V1.2 Build 21 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -170,7 +170,7 @@
           <input id="s-color" placeholder="Color" autocomplete="off">
           <input id="s-type"  placeholder="Type (SUV, Sedan…)" autocomplete="off">
         </div>
-        <input id="s-year" placeholder="Year" autocomplete="off" inputmode="numeric">
+        <input id="s-date" placeholder="Date Seen" autocomplete="off">
       </div>
       <div class="search-actions">
         <button class="btn btn-primary" id="search-btn">🔍 Search</button>
@@ -360,14 +360,14 @@ const get = (row, key) => colMap[key] ? String(row[colMap[key]]||'') : '';
 
 function filterVehicles() {
   const q = {};
-  ['plate','make','model','color','type','year'].forEach(k => q[k] = $(('s-'+k)).value.toLowerCase().replace(/\s/g,''));
+  ['plate','make','model','color','type','date'].forEach(k => q[k] = $(('s-'+k)).value.toLowerCase().replace(/\s/g,''));
   return allVehicles.filter(v =>
     (!q.plate || get(v,'plate').toLowerCase().replace(/\s/g,'').includes(q.plate)) &&
     (!q.make  || get(v,'make').toLowerCase().includes(q.make)) &&
     (!q.model || get(v,'model').toLowerCase().includes(q.model)) &&
     (!q.color || get(v,'color').toLowerCase().includes(q.color)) &&
     (!q.type  || get(v,'type').toLowerCase().includes(q.type)) &&
-    (!q.year  || get(v,'year').toLowerCase().includes(q.year))
+    (!q.date  || get(v,'date').toLowerCase().includes(q.date))
   );
 }
 
@@ -401,7 +401,7 @@ function renderResults(vehicles) {
       </div>
       <div class="card-body">
         <div class="card-plate">${plate}</div>
-        <div class="card-make">${[get(v,'year'),get(v,'make'),get(v,'model')].filter(Boolean).join(' ')||'Unknown'}</div>
+        <div class="card-make">${[get(v,'make'),get(v,'model')].filter(Boolean).join(' ')||'Unknown'}</div>
         <div class="card-meta">
           ${get(v,'color')?`<span class="meta-tag color-tag">${get(v,'color')}</span>`:''}
           ${get(v,'type') ?`<span class="meta-tag">${get(v,'type')}</span>`:''}
@@ -421,7 +421,7 @@ function openModal(v, photos) {
   else gw.style.display = 'none';
 
   $('modal-title').textContent =
-    [get(v,'year'),get(v,'make'),get(v,'model')].filter(Boolean).join(' ') || 'Vehicle Details';
+    [get(v,'make'),get(v,'model')].filter(Boolean).join(' ') || 'Vehicle Details';
 
   const details = $('modal-details');
   details.innerHTML = '';
