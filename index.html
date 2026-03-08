@@ -1,4 +1,4 @@
-<!-- Vehicle Search Tool - V1.2 Build 24 -->
+<!-- Vehicle Search Tool - V1.2 Build 28 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -311,6 +311,26 @@ $('clear-btn').addEventListener('click', () => {
 
 const get = (row, key) => colMap[key] ? String(row[colMap[key]]||'') : '';
 
+function formatDate(val) {
+  if (!val) return '';
+  const num = parseFloat(val);
+  if (!isNaN(num) && num > 1000) {
+    // Convert Excel serial date to JS date
+    const date = new Date(Math.round((num - 25569) * 86400 * 1000));
+    const d = String(date.getUTCDate()).padStart(2,'0');
+    const m = String(date.getUTCMonth()+1).padStart(2,'0');
+    const y = date.getUTCFullYear();
+    return `${d}/${m}/${y}`;
+  }
+  return val;
+}
+
+function getField(row, key) {
+  const raw = get(row, key);
+  if (key === 'date') return formatDate(raw);
+  return raw;
+}
+
 function filterVehicles() {
   const q = {};
   ['plate','make','model','color','type','date'].forEach(k => q[k] = $(('s-'+k)).value.toLowerCase().replace(/\s/g,''));
@@ -383,7 +403,7 @@ function openModal(v, photos) {
   const details = $('modal-details');
   details.innerHTML = '';
   FIELDS.forEach(f => {
-    const val = get(v,f.key); if(!val) return;
+    const val = getField(v,f.key); if(!val) return;
     details.innerHTML += `<div class="detail-item"><label>${f.label}</label><p>${val}</p></div>`;
   });
   excelCols.forEach(col => {
