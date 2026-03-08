@@ -7,7 +7,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { font-family: 'Segoe UI', sans-serif; background: #0f1117; color: #e1e4e8; min-height: 100vh; }
+  body { font-family: 'Segoe UI', sans-serif; background: #ffffff; color: #111111; min-height: 100vh; font-size: 16px; }
 
   header {
     background: linear-gradient(135deg, #1a1f2e, #16213e);
@@ -215,7 +215,7 @@
 </div>
 
 <script>
-const GITHUB_USER = 'ssandy368368';
+const GITHUB_USER = 'Sandy368368';
 const GITHUB_REPO = 'vehicle-search';
 const EXCEL_FILE  = 'vehicles.xlsx';
 const PHOTOS_DIR  = 'photos';
@@ -283,12 +283,23 @@ async function init() {
     if (saved) { colMap = JSON.parse(saved); showSearch(); renderResults(allVehicles); }
     else showMappingUI();
   } catch(e) {
-    hide('loading-screen'); show('error-screen'); console.error(e);
+    hide('loading-screen');
+    document.getElementById('error-screen').style.display = '';
+    document.getElementById('error-screen').innerHTML = `
+      <h2>⚠️ Error</h2>
+      <p>${e.message}</p>
+      <p style="margin-top:10px;font-size:0.8rem;color:#8b949e">User: ${GITHUB_USER} | Repo: ${GITHUB_REPO} | File: ${EXCEL_FILE} | Branch: ${BRANCH}</p>
+      <p style="margin-top:14px"><button class="btn btn-primary" style="width:auto;padding:10px 24px" onclick="init()">↺ Try Again</button></p>
+    `;
+    console.error(e);
   }
 }
 
 function showMappingUI() {
-  show('mapping-section');
+  const ms = document.getElementById('mapping-section');
+  ms.style.display = 'block';
+  ms.style.visibility = 'visible';
+  ms.style.opacity = '1';
   const cont = $('column-map-rows');
   cont.innerHTML = '';
   FIELDS.forEach(f => {
@@ -321,8 +332,11 @@ $('apply-map-btn').addEventListener('click', () => {
 });
 
 function showSearch() {
-  show('search-panel');
-  $('stats-bar').style.display = 'flex';
+  const sp = document.getElementById('search-panel');
+  sp.style.display = 'block';
+  sp.style.visibility = 'visible';
+  sp.style.opacity = '1';
+  document.getElementById('stats-bar').style.display = 'flex';
 }
 
 $('refresh-btn').addEventListener('click', () => {
