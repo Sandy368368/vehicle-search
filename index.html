@@ -1,4 +1,4 @@
-<!-- Vehicle Search Tool - V2.0 Build 39 -->
+<!-- Vehicle Search Tool - V2.0 Build 41 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,13 +17,13 @@
 
   .container { max-width: 900px; margin: 0 auto; padding: 16px; }
 
-  /* Password screen */
-  #password-screen {
+  /* Password */
+  #pw-screen {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     min-height: 60vh; padding: 30px 20px; text-align: center;
   }
-  #password-screen h2 { font-size: 1.3rem; font-weight: 700; color: #1a3a6b; margin-bottom: 8px; }
-  #password-screen p { font-size: 0.9rem; color: #444; margin-bottom: 24px; }
+  #pw-screen h2 { font-size: 1.3rem; font-weight: 700; color: #1a3a6b; margin-bottom: 8px; }
+  #pw-screen p { font-size: 0.9rem; color: #444; margin-bottom: 24px; }
   #pw-input {
     background: #ffffff; border: 2px solid #1a3a6b; color: #111111;
     padding: 13px 14px; border-radius: 8px; font-size: 1rem; width: 100%;
@@ -34,19 +34,22 @@
   #pw-error { color: #cc0000; font-size: 0.9rem; margin-top: 8px; display: none; }
   #pw-submit { max-width: 320px; width: 100%; }
 
-  #loading-screen { text-align: center; padding: 60px 20px; display: none; }
+  /* Loading */
+  #load-screen { display: none; text-align: center; padding: 60px 20px; }
   .spinner { width: 44px; height: 44px; border: 4px solid #cccccc; border-top-color: #1a3a6b; border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 18px; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  #loading-screen h2 { font-size: 1.2rem; color: #111111; margin-bottom: 6px; }
-  #loading-screen p { font-size: 0.95rem; color: #444444; }
+  #load-screen h2 { font-size: 1.2rem; color: #111111; margin-bottom: 6px; }
+  #load-screen p { font-size: 0.95rem; color: #444444; }
 
-  #error-screen { display:none; text-align:center; padding: 40px 20px; }
-  #error-screen h2 { color: #cc0000; margin-bottom: 10px; }
-  #error-screen p { color: #444444; font-size: 0.95rem; margin-bottom: 6px; }
-  #error-screen code { background: #f0f0f0; padding: 2px 8px; border-radius: 4px; font-size: 0.9rem; }
+  /* Error */
+  #err-screen { display: none; text-align: center; padding: 40px 20px; }
+  #err-screen h2 { color: #cc0000; margin-bottom: 10px; }
+  #err-screen p { color: #444444; font-size: 0.95rem; margin-bottom: 6px; }
+  #err-screen code { background: #f0f0f0; padding: 2px 8px; border-radius: 4px; font-size: 0.9rem; }
 
-  #search-panel { display:none; }
-  .search-panel { background: #f0f4ff; border: 2px solid #b0c4de; border-radius: 12px; padding: 14px; margin-bottom: 16px; }
+  /* Search */
+  #search-panel { display: none; }
+  .search-box { background: #f0f4ff; border: 2px solid #b0c4de; border-radius: 12px; padding: 14px; margin-bottom: 16px; }
   .search-fields { display: flex; flex-direction: column; gap: 10px; }
   .search-fields input { background: #ffffff; border: 2px solid #1a3a6b; color: #111111; padding: 13px 14px; border-radius: 8px; font-size: 1rem; width: 100%; min-height: 48px; -webkit-appearance: none; transition: border-color .2s; }
   .search-fields input::placeholder { color: #666666; }
@@ -58,11 +61,13 @@
   .btn-primary:active { background: #0033aa; }
   .btn-secondary { background: #ffffff; color: #111111; border: 2px solid #1a3a6b; flex: 0 0 auto; padding: 13px 20px; }
 
+  /* Stats */
+  #stats-bar { display: none; }
   .stats-bar { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
   .stat-badge { background: #f0f4ff; border: 2px solid #1a3a6b; border-radius: 20px; padding: 5px 14px; font-size: 0.9rem; color: #111111; font-weight: 600; }
   .stat-badge span { color: #1a3a6b; font-weight: 700; }
-  #stats-bar { display:none; }
 
+  /* Results grid */
   .results-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
   @media (min-width: 600px) { .results-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (min-width: 900px) { .results-grid { grid-template-columns: repeat(4, 1fr); } }
@@ -81,6 +86,7 @@
   .meta-tag.color-tag { border-left: 3px solid #1a3a6b; }
   .card-dates { font-size: 0.75rem; color: #1a3a6b; font-weight: 600; }
 
+  /* Modal */
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 200; flex-direction: column; }
   .modal-overlay.open { display: flex; }
   .modal { background: #ffffff; display: flex; flex-direction: column; height: 100%; width: 100%; overflow-y: auto; }
@@ -120,7 +126,7 @@
   .empty-state { text-align: center; padding: 50px 20px; color: #444444; }
   .empty-state h3 { font-size: 1.1rem; margin: 12px 0 6px; color: #111111; font-weight: 700; }
 
-  .refresh-bar { text-align:right; margin-bottom: 10px; }
+  .refresh-bar { text-align: right; margin-bottom: 10px; }
   .btn-refresh { background: #ffffff; border: 2px solid #1a3a6b; color: #1a3a6b; border-radius: 7px; padding: 6px 14px; font-size: 0.9rem; cursor: pointer; font-weight: 700; }
   .btn-refresh:active { background: #f0f4ff; }
 </style>
@@ -139,8 +145,9 @@
 </header>
 
 <div class="container">
-  <!-- Password screen -->
-  <div id="password-screen">
+
+  <!-- Password -->
+  <div id="pw-screen">
     <h2>🔒 Authorized Access Only</h2>
     <p>Enter the password to access the vehicle database.</p>
     <input type="password" id="pw-input" placeholder="Password" autocomplete="off">
@@ -149,22 +156,25 @@
   </div>
 
   <!-- Loading -->
+  <div id="load-screen">
     <div class="spinner"></div>
     <h2>Loading vehicle data…</h2>
     <p>Fetching latest data from repository</p>
   </div>
 
-  <div id="error-screen">
+  <!-- Error -->
+  <div id="err-screen">
     <h2>⚠️ Could not load data</h2>
     <p>Make sure <code>vehicles.xlsx</code> exists in the root of your repository.</p>
     <p style="margin-top:14px"><button class="btn btn-primary" style="width:auto;padding:10px 24px" onclick="init()">↺ Try Again</button></p>
   </div>
 
+  <!-- Search -->
   <div id="search-panel">
     <div class="refresh-bar">
       <button class="btn-refresh" id="refresh-btn">↺ Refresh data</button>
     </div>
-    <div class="search-panel">
+    <div class="search-box">
       <div class="search-fields">
         <input id="s-plate" placeholder="🔢 Plate number (partial ok, e.g. MN)" autocomplete="off">
         <div class="search-row">
@@ -196,6 +206,7 @@
       <p>Try adjusting your search</p>
     </div>
   </div>
+
 </div>
 
 <!-- Modal -->
@@ -227,7 +238,7 @@ const RAW = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${B
 const COL = { id:'ID', plate:'Plate', make:'Make', model:'Model', color:'Color', type:'Type', date:'Date', notes:'note' };
 
 let allRows  = [];
-let vehicles = [];   // always kept in sorted order
+let vehicles = [];
 let photoIndex = {};
 
 const $ = id => document.getElementById(id);
@@ -241,15 +252,9 @@ function handlePassword() {
   const entered = $('pw-input').value;
   if (entered === PASSWORD) {
     localStorage.setItem(PW_KEY, PASSWORD);
-    $('pw-error').style.display    = 'none';
-    $('password-screen').style.display = 'none';
-    // ── Start ──
-if (checkAuth()) {
-  $('password-screen').style.display = 'none';
-  init();
-} else {
-  $('password-screen').style.display = 'flex';
-}
+    $('pw-error').style.display  = 'none';
+    $('pw-screen').style.display = 'none';
+    init();
   } else {
     $('pw-error').style.display = 'block';
     $('pw-input').value = '';
@@ -324,7 +329,7 @@ async function buildPhotoIndex() {
   } catch(e) { console.warn('Photo index error', e); }
 }
 
-// ── Group rows by ID, sort sightings newest first ──
+// ── Group rows by ID ──
 function groupByID(rows) {
   const map = {};
   rows.forEach(row => {
@@ -340,11 +345,9 @@ function groupByID(rows) {
       notes: getCol(row,'notes'),
     });
   });
-  // Sort each vehicle's sightings newest first
   Object.values(map).forEach(v => {
     v.sightings.sort((a,b) => parseFloat(b.date||0) - parseFloat(a.date||0));
   });
-  // Return vehicles sorted by most recent sighting, then alpha by ID
   return sortVehicles(Object.values(map));
 }
 
@@ -365,10 +368,10 @@ function getVehiclePhotos(v) {
 
 // ── Init ──
 async function init() {
-  $('error-screen').style.display  = 'none';
-  $('search-panel').style.display  = 'none';
-  $('stats-bar').style.display     = 'none';
-  $('loading-screen').style.display = '';
+  $('err-screen').style.display   = 'none';
+  $('search-panel').style.display = 'none';
+  $('stats-bar').style.display    = 'none';
+  $('load-screen').style.display  = 'block';
 
   try {
     const [xlsxRes] = await Promise.all([
@@ -381,19 +384,17 @@ async function init() {
     const ws   = wb.Sheets[wb.SheetNames[0]];
     allRows    = XLSX.utils.sheet_to_json(ws, { defval:'' });
     if (!allRows.length) throw new Error('No data rows found');
+    vehicles   = groupByID(allRows);
 
-    // Group and sort — vehicles is now always in correct order
-    vehicles = groupByID(allRows);
-
-    $('loading-screen').style.display  = 'none';
-    $('search-panel').style.display    = 'block';
+    $('load-screen').style.display  = 'none';
+    $('search-panel').style.display = 'block';
     $('search-panel').style.visibility = 'visible';
-    $('stats-bar').style.display       = 'flex';
+    $('stats-bar').style.display    = 'flex';
     renderResults(vehicles);
   } catch(e) {
-    $('loading-screen').style.display = 'none';
-    $('error-screen').style.display   = '';
-    $('error-screen').innerHTML = `
+    $('load-screen').style.display = 'none';
+    $('err-screen').style.display  = 'block';
+    $('err-screen').innerHTML = `
       <h2>⚠️ Error</h2>
       <p>${e.message}</p>
       <p style="margin-top:14px"><button class="btn btn-primary" style="width:auto;padding:10px 24px" onclick="init()">↺ Try Again</button></p>`;
@@ -411,8 +412,6 @@ function filterVehicles() {
     type:  $('s-type').value.toLowerCase().trim(),
     date:  $('s-date').value.toLowerCase().trim(),
   };
-
-  // Filter from already-sorted vehicles — no need to re-sort
   return vehicles.filter(v => {
     if (q.plate && !v.id.toLowerCase().includes(q.plate) &&
                    !v.plate.toLowerCase().replace(/\s/g,'').includes(q.plate)) return false;
@@ -570,7 +569,13 @@ function openModal(v) {
 $('modal-close').addEventListener('click', () => $('modal').classList.remove('open'));
 $('modal').addEventListener('click', e => { if(e.target===e.currentTarget) e.currentTarget.classList.remove('open'); });
 
-init();
+// ── Start ──
+if (checkAuth()) {
+  $('pw-screen').style.display = 'none';
+  init();
+} else {
+  $('pw-screen').style.display = 'flex';
+}
 </script>
 </body>
 </html>
